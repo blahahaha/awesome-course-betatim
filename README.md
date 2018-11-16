@@ -1,4 +1,4 @@
-# Awesome course 101
+# Awesome course 101 n
 
 Welcome to the materials and assignments for "Awesome course 101".
 
