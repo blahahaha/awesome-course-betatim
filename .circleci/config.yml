@@ -20,7 +20,6 @@ jobs:
           name: "Prepare directories"
           command: |
             mkdir -p notebooks/week1
-            mkdir -p notebooks/week1/.ipynb_checkpoints
             
       - run:
           name: Execute week1/homework.ipynb
@@ -28,12 +27,6 @@ jobs:
             . /tmp/venv/bin/activate
             papermill week1/homework.ipynb week1/homework-graded.ipynb
             jupyter nbconvert --to html --stdout week1/homework-graded.ipynb > notebooks/week1/homework.html
-      - run:
-          name: Execute week1/.ipynb_checkpoints/homework-checkpoint.ipynb
-          command: |
-            . /tmp/venv/bin/activate
-            papermill week1/.ipynb_checkpoints/homework-checkpoint.ipynb week1/.ipynb_checkpoints/homework-checkpoint-graded.ipynb
-            jupyter nbconvert --to html --stdout week1/.ipynb_checkpoints/homework-checkpoint-graded.ipynb > notebooks/week1/.ipynb_checkpoints/homework-checkpoint.html
       
       - store_artifacts:
           path: /tmp/repo/notebooks
