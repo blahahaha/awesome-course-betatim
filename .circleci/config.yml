@@ -9,11 +9,28 @@ jobs:
     steps:
       - checkout
       - run:
-          name: Install dependencies
+          name: Install grading dependencies
           command: |
+            source activate base
             pip install --progress-bar off ipython ipywidgets
             pip install --progress-bar off https://github.com/nteract/papermill/archive/89a43a1bade7d9ba71b47a8a18cfc4d0b82e902a.zip
             pip install --progress-bar off https://github.com/earthlab/grading-workflow-experiments/archive/master.zip
+
+      - restore_cache:
+          keys:
+            - conda-v1-{{ checksum "environment.yml" }}
+            - conda-v1
+
+      - run:
+          name: Install course specific dependencies
+          command: |
+            source activate base
+            [ -e environment.yml ] && conda env update --quiet -f environment.yml && conda clean -tipsy
+
+      - save_cache:
+          key: conda-v1-{{ checksum "environment.yml" }}
+          paths:
+            - /opt/conda
 
       - run:
           name: "Prepare directories"
@@ -24,11 +41,13 @@ jobs:
       - run:
           name: Execute week1/homework.ipynb
           command: |
+            source activate base
             papermill --cwd week1 week1/homework.ipynb homework-graded.ipynb
             jupyter nbconvert --to html --stdout week1/homework-graded.ipynb > notebooks/week1/homework.html
       - run:
           name: Execute week3/homework.ipynb
           command: |
+            source activate base
             papermill --cwd week3 week3/homework.ipynb homework-graded.ipynb
             jupyter nbconvert --to html --stdout week3/homework-graded.ipynb > notebooks/week3/homework.html
       
